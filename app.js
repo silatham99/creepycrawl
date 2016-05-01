@@ -29,29 +29,28 @@ if (pgCredentials['username']) {
 pgUri += pgCredentials['url'] + '/' + pgCredentials['database'];
 
 let crawler = new Spider({
-	// How many requests can be run in parallel
-	concurrent: 5,
-	// How long to wait after each request
-	delay: 0,
-	// A stream to where internal logs are sent, optional
-	logs: process.stderr,
-	// Re-visit visited URLs, false by default
-	allowDuplicates: false,
-	// If `true` all queued handlers will be try-catch'd, errors go to `error` callback
-	catchErrors: true,
-	// Called when there's an error, throw will be used if none is provided
-	error: function(err, url) {
+  // How many requests can be run in parallel
+  concurrent: 5,
+  // How long to wait after each request
+  delay: 0,
+  // A stream to where internal logs are sent, optional
+  logs: process.stderr,
+  // Re-visit visited URLs, false by default
+  allowDuplicates: false,
+  // If `true` all queued handlers will be try-catch'd, errors go to `error` callback
+  catchErrors: true,
+  // Called when there's an error, throw will be used if none is provided
+  error: function(err, url) {
     console.error("Error encountered parsing: ", url, "\n", err);
-	},
-	// Called when there are no more requests
-	done: function() {
+  },
+  // Called when there are no more requests
+  done: function() {
     console.log("Finish processing.");
     process.exit(0);
-	},
-
-	//- All options are passed to `request` module, for example:
-	headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36' },
-	encoding: 'utf8'
+  },
+  //- All options are passed to `request` module, for example:
+  headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36' },
+  encoding: 'utf8'
 });
 
 let processDocument = (content) => {
@@ -93,10 +92,6 @@ let storeAnaylsis = (analysis, url) => {
     });
   });
 };
-
-let resolveLinks = (links, resolve) => {
-
-}
 
 let handleRequest = (doc) => {
   if (doc.res && doc.res.body) {
