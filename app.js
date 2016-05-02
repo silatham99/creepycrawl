@@ -1,7 +1,6 @@
 'use strict';
 
 let _ = require('underscore');
-let cleanse = require('sanitize-html');
 let lda = require('lda');
 let pg = require('pg');
 let Spider = require('node-spider');
@@ -54,11 +53,8 @@ let crawler = new Spider({
 });
 
 let processDocument = (content) => {
-  let text = cleanse(content, {
-    allowedTags: [],
-    allowedAttributes: []
-  });
-  let ldaAnalysis = lda(text.match(/[^\.!\?]+[\.!\?]+/g), 1, 10);
+  let tokens = content.match(/[^\.!\?]+[\.!\?]+/g);
+  let ldaAnalysis = lda(tokens, 1, 10);
   return ldaAnalysis[0];
 };
 
@@ -94,9 +90,11 @@ let storeAnaylsis = (analysis, url) => {
 };
 
 let handleRequest = (doc) => {
-  if (doc.res && doc.res.body) {
-    let ldaAnalysis = processDocument(doc.res.body);
-    storeAnaylsis(ldaAnalysis, doc.res.request.href);
+  let href = doc.res.request.href;
+
+  if (doc.res && doc.res.body && href.match(/https:\/\/www\.kickstarter\.com\/projects\//)) {
+    let ldaAnalysis = processDocument(doc.$('.full-description').text());
+    storeAnaylsis(ldaAnalysis, href);
   }
 
   let validLinks = _.filter(doc.$('a'), (link) => {
